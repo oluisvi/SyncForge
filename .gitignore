@@ -1,0 +1,23 @@
+node_modules/
+.pnpm-store/
+
+# Build and framework output
+dist/
+build/
+.next/
+coverage/
+*.tsbuildinfo
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+
+# Logs and editor metadata
+*.log
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
