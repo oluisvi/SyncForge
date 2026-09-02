@@ -2,5 +2,9 @@ packages:
   - "apps/*"
   - "packages/*"
 
+allowBuilds:
+  '@prisma/engines': true
+  prisma: true
+
 catalog:
   typescript: 7.0.2

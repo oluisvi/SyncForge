@@ -1,0 +1,36 @@
+{
+  "name": "@syncforge/database",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "prisma generate && tsc -p tsconfig.json",
+    "typecheck": "prisma generate && tsc --noEmit -p tsconfig.json",
+    "test": "pnpm run build && node --test test/*.test.mjs",
+    "db:dev": "prisma dev --name syncforge",
+    "db:dev:test": "prisma dev --name syncforge-test --port 51223 --db-port 51224 --shadow-db-port 51225",
+    "db:generate": "prisma generate",
+    "db:migrate:dev": "prisma migrate dev",
+    "db:migrate:deploy": "prisma migrate deploy",
+    "db:migrate:status": "prisma migrate status",
+    "db:health": "pnpm run build && node scripts/health.mjs"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "7.10.0",
+    "@prisma/client": "7.10.0",
+    "@syncforge/config": "workspace:*",
+    "pg": "8.23.0"
+  },
+  "devDependencies": {
+    "@types/node": "24.10.0",
+    "dotenv": "17.4.2",
+    "prisma": "7.10.0",
+    "typescript": "catalog:"
+  }
+}

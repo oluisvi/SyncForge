@@ -42,4 +42,6 @@ apps/
 packages/    Shared packages created only when a concrete contract requires them
 ```
 
+Database setup and migration commands are documented in `packages/database/README.md`.
+
 Package names use the `@syncforge/*` scope. Files and directories use lowercase kebab-case unless a framework convention requires otherwise.
