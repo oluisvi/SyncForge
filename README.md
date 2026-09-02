@@ -21,6 +21,8 @@ pnpm install --frozen-lockfile
 
 For the first install before a lockfile exists, use `pnpm install`. Commit the generated lockfile; subsequent installs should use the frozen command above.
 
+Copy `.env.example` for local development or `.env.test.example` for tests to the environment file consumed by the relevant application. Environment schemas must use `@syncforge/config` and fail during startup when required values are missing or invalid.
+
 ## Baseline commands
 
 ```sh
