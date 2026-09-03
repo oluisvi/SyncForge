@@ -8,3 +8,6 @@ allowBuilds:
 
 catalog:
   typescript: 7.0.2
+
+minimumReleaseAgeExclude:
+  - '@types/react-dom@19.2.7'

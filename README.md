@@ -38,11 +38,12 @@ Workspace packages expose their own `build`, `typecheck`, and `test` scripts as 
 ```text
 apps/
   api/       NestJS API (Task 0.4)
-  web/       Next.js web app (Task 0.5)
+  web/       Next.js App Router web shell (Task 0.5)
 packages/    Shared packages created only when a concrete contract requires them
 ```
 
 Database setup and migration commands are documented in `packages/database/README.md`.
 API setup, environment requirements, and focused commands are documented in `apps/api/README.md`.
+Web routes, scope, and focused commands are documented in `apps/web/README.md`.
 
 Package names use the `@syncforge/*` scope. Files and directories use lowercase kebab-case unless a framework convention requires otherwise.
