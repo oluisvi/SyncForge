@@ -32,6 +32,7 @@ COMPLETE
 ## Contracts Established
 
 - `pnpm check` is the local and CI source of truth for repository quality.
+- Root typecheck builds the shared configuration contract before dependent workspaces consume its declarations.
 - Formatting and linting run from the repository root and cover all current workspaces.
 - Typechecking remains a distinct gate because linting is intentionally syntax-based during the TypeScript 7 tooling transition.
 - CI does not require secrets, external services, database migrations, or deployment credentials.
@@ -41,7 +42,7 @@ COMPLETE
 
 - ESLint 9 is retained because the React ecosystem bundled by Next 16.3.4 does not yet declare ESLint 10 compatibility.
 - The TypeScript 6 API alias is transitional and should be removed when `typescript-eslint` supports TypeScript 7.
-- The workflow is locally validated; its first hosted GitHub run remains the authoritative runner-environment confirmation.
+- The first hosted run exposed and verified the fix for clean-checkout workspace declaration ordering.
 
 ## Deferred / Out of Scope
 
