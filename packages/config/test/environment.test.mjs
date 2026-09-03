@@ -13,7 +13,10 @@ import {
 } from "../dist/index.js";
 
 const schema = {
-  NODE_ENV: withDefault(enumValue(["development", "test", "production"]), "development"),
+  NODE_ENV: withDefault(
+    enumValue(["development", "test", "production"]),
+    "development",
+  ),
   API_PORT: withDefault(integerValue({ min: 1, max: 65_535 }), 3_001),
   PUBLIC_API_URL: urlValue({ protocols: ["http:", "https:"] }),
   RELEASE_SHA: optional(stringValue()),

@@ -32,7 +32,8 @@ test("loads explicit API configuration", () => {
 });
 
 test("rejects missing, out-of-range, and non-origin API values without leaking them", () => {
-  const suppliedOrigin = "https://user:secret@example.test/private?token=sensitive";
+  const suppliedOrigin =
+    "https://user:secret@example.test/private?token=sensitive";
 
   assert.throws(
     () =>
@@ -51,8 +52,5 @@ test("rejects missing, out-of-range, and non-origin API values without leaking t
     },
   );
 
-  assert.throws(
-    () => loadApiConfig({}),
-    /API_CORS_ORIGIN is required/,
-  );
+  assert.throws(() => loadApiConfig({}), /API_CORS_ORIGIN is required/);
 });

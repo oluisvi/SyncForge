@@ -4,7 +4,10 @@ type IconProps = Readonly<{
   className?: string;
 }>;
 
-function IconBase({ children, className }: IconProps & Readonly<{ children: ReactNode }>) {
+function IconBase({
+  children,
+  className,
+}: IconProps & Readonly<{ children: ReactNode }>) {
   return (
     <svg
       aria-hidden="true"
@@ -57,7 +60,10 @@ export function EmptyArchitectureIcon() {
   return (
     <div className="empty-icon" aria-hidden="true">
       <svg fill="none" focusable="false" viewBox="0 0 72 72">
-        <path className="empty-icon__grid" d="M12 24h48M12 48h48M24 12v48M48 12v48" />
+        <path
+          className="empty-icon__grid"
+          d="M12 24h48M12 48h48M24 12v48M48 12v48"
+        />
         <path className="empty-icon__mark" d="M36 21v30M21 36h30" />
         <circle className="empty-icon__node" cx="36" cy="36" r="3" />
       </svg>

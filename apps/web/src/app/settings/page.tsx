@@ -11,7 +11,8 @@ export default function SettingsPage() {
         <p className="eyebrow">Workspace</p>
         <h1 id="settings-title">Settings</h1>
         <p className="content-page__description">
-          Workspace preferences will appear here when their product requirements are defined.
+          Workspace preferences will appear here when their product requirements
+          are defined.
         </p>
       </div>
     </section>

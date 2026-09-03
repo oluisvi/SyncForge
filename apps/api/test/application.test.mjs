@@ -7,10 +7,7 @@ import { IsString } from "class-validator";
 import request from "supertest";
 
 import { AppModule } from "../dist/app.module.js";
-import {
-  configureApplication,
-  startApplication,
-} from "../dist/application.js";
+import { configureApplication, startApplication } from "../dist/application.js";
 import { DatabaseService } from "../dist/database/database.service.js";
 
 class ValidationProbeDto {}
@@ -128,7 +125,10 @@ test("GET /api/health returns a generic 503 when the database is unavailable", a
       message: "A required dependency is unavailable",
     },
   });
-  assert.doesNotMatch(JSON.stringify(response.body), /database failure|sensitive/);
+  assert.doesNotMatch(
+    JSON.stringify(response.body),
+    /database failure|sensitive/,
+  );
 });
 
 test("unknown routes use the stable public error envelope", async () => {

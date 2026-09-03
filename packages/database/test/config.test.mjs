@@ -8,7 +8,10 @@ test("accepts PostgreSQL URLs and normalizes the connection string", () => {
     DATABASE_URL: " postgresql://user:password@localhost:5432/syncforge ",
   });
 
-  assert.equal(config.connectionString, "postgresql://user:password@localhost:5432/syncforge");
+  assert.equal(
+    config.connectionString,
+    "postgresql://user:password@localhost:5432/syncforge",
+  );
   assert.equal(Object.isFrozen(config), true);
 });
 

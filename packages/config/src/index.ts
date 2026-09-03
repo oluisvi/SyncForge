@@ -4,10 +4,14 @@ export interface EnvironmentRule<T> {
   readonly parse: (value: string | undefined, key: string) => T;
 }
 
-export type EnvironmentSchema = Readonly<Record<string, EnvironmentRule<unknown>>>;
+export type EnvironmentSchema = Readonly<
+  Record<string, EnvironmentRule<unknown>>
+>;
 
 export type InferEnvironment<TSchema extends EnvironmentSchema> = {
-  readonly [TKey in keyof TSchema]: TSchema[TKey] extends EnvironmentRule<infer TValue>
+  readonly [TKey in keyof TSchema]: TSchema[TKey] extends EnvironmentRule<
+    infer TValue
+  >
     ? TValue
     : never;
 };
@@ -38,7 +42,9 @@ export function stringValue(): EnvironmentRule<string> {
   };
 }
 
-export function urlValue(options: { readonly protocols?: readonly string[] } = {}): EnvironmentRule<URL> {
+export function urlValue(
+  options: { readonly protocols?: readonly string[] } = {},
+): EnvironmentRule<URL> {
   return {
     parse(value, key) {
       const normalized = requiredValue(value, key);
@@ -51,7 +57,9 @@ export function urlValue(options: { readonly protocols?: readonly string[] } = {
       }
 
       if (options.protocols && !options.protocols.includes(parsed.protocol)) {
-        throw new Error(`${key} must use one of: ${options.protocols.join(", ")}`);
+        throw new Error(
+          `${key} must use one of: ${options.protocols.join(", ")}`,
+        );
       }
 
       return parsed;
@@ -100,10 +108,14 @@ export function enumValue<const TValues extends readonly [string, ...string[]]>(
   };
 }
 
-export function optional<TValue>(rule: EnvironmentRule<TValue>): EnvironmentRule<TValue | undefined> {
+export function optional<TValue>(
+  rule: EnvironmentRule<TValue>,
+): EnvironmentRule<TValue | undefined> {
   return {
     parse(value, key) {
-      return value === undefined || value.trim() === "" ? undefined : rule.parse(value, key);
+      return value === undefined || value.trim() === ""
+        ? undefined
+        : rule.parse(value, key);
     },
   };
 }
@@ -114,7 +126,9 @@ export function withDefault<TValue>(
 ): EnvironmentRule<TValue> {
   return {
     parse(value, key) {
-      return value === undefined || value.trim() === "" ? fallback : rule.parse(value, key);
+      return value === undefined || value.trim() === ""
+        ? fallback
+        : rule.parse(value, key);
     },
   };
 }

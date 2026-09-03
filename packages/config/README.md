@@ -5,10 +5,18 @@ Shared primitives for validating application environment variables at startup.
 Each application owns its schema and passes its environment source explicitly:
 
 ```ts
-import { enumValue, loadEnvironment, urlValue, withDefault } from "@syncforge/config";
+import {
+  enumValue,
+  loadEnvironment,
+  urlValue,
+  withDefault,
+} from "@syncforge/config";
 
 const schema = {
-  NODE_ENV: withDefault(enumValue(["development", "test", "production"]), "development"),
+  NODE_ENV: withDefault(
+    enumValue(["development", "test", "production"]),
+    "development",
+  ),
   PUBLIC_API_URL: urlValue({ protocols: ["http:", "https:"] }),
 };
 

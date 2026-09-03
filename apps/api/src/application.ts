@@ -31,7 +31,10 @@ export function configureApplication(
       requestOrigin: string | undefined,
       callback: (error: Error | null, allow?: boolean) => void,
     ) {
-      callback(null, requestOrigin === undefined || requestOrigin === config.corsOrigin);
+      callback(
+        null,
+        requestOrigin === undefined || requestOrigin === config.corsOrigin,
+      );
     },
   });
   app.setGlobalPrefix("api");

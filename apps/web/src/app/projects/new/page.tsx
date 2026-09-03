@@ -12,7 +12,8 @@ export default function NewProjectPage() {
         <p className="eyebrow">Projects</p>
         <h1 id="new-project-title">Create project</h1>
         <p className="content-page__description">
-          Project creation will be enabled in a later product task. The web foundation is ready for that flow.
+          Project creation will be enabled in a later product task. The web
+          foundation is ready for that flow.
         </p>
       </div>
       <Link className="button button--secondary" href="/">

@@ -8,11 +8,20 @@ interface PublicError {
 }
 
 const publicErrors = new Map<number, PublicError>([
-  [HttpStatus.BAD_REQUEST, { code: "BAD_REQUEST", message: "Request is invalid" }],
-  [HttpStatus.UNAUTHORIZED, { code: "UNAUTHORIZED", message: "Authentication is required" }],
+  [
+    HttpStatus.BAD_REQUEST,
+    { code: "BAD_REQUEST", message: "Request is invalid" },
+  ],
+  [
+    HttpStatus.UNAUTHORIZED,
+    { code: "UNAUTHORIZED", message: "Authentication is required" },
+  ],
   [HttpStatus.FORBIDDEN, { code: "FORBIDDEN", message: "Access is forbidden" }],
   [HttpStatus.NOT_FOUND, { code: "NOT_FOUND", message: "Resource not found" }],
-  [HttpStatus.CONFLICT, { code: "CONFLICT", message: "Request conflicts with current state" }],
+  [
+    HttpStatus.CONFLICT,
+    { code: "CONFLICT", message: "Request conflicts with current state" },
+  ],
   [
     HttpStatus.UNPROCESSABLE_ENTITY,
     { code: "UNPROCESSABLE_ENTITY", message: "Request cannot be processed" },
@@ -48,7 +57,11 @@ const explicitErrors = new Map<string, PublicError>([
 function getExplicitError(exception: HttpException): PublicError | undefined {
   const response = exception.getResponse();
 
-  if (typeof response !== "object" || response === null || !("code" in response)) {
+  if (
+    typeof response !== "object" ||
+    response === null ||
+    !("code" in response)
+  ) {
     return undefined;
   }
 
@@ -80,14 +93,14 @@ export class ApiExceptionFilter implements ExceptionFilter {
         ? exception.getStatus()
         : isPayloadTooLargeError(exception)
           ? HttpStatus.PAYLOAD_TOO_LARGE
-        : HttpStatus.INTERNAL_SERVER_ERROR;
+          : HttpStatus.INTERNAL_SERVER_ERROR;
     const status =
       candidateStatus >= 400 && candidateStatus <= 599
         ? candidateStatus
         : HttpStatus.INTERNAL_SERVER_ERROR;
     const publicError =
       exception instanceof HttpException
-        ? getExplicitError(exception) ?? publicErrors.get(status)
+        ? (getExplicitError(exception) ?? publicErrors.get(status))
         : isPayloadTooLargeError(exception)
           ? publicErrors.get(HttpStatus.PAYLOAD_TOO_LARGE)
           : undefined;

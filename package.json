@@ -10,10 +10,24 @@
   },
   "scripts": {
     "build": "pnpm -r --if-present run build",
+    "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build",
+    "format:check": "prettier --check .",
+    "format:write": "prettier --write .",
+    "lint": "eslint . --max-warnings 0",
+    "lint:fix": "eslint . --fix --max-warnings 0",
     "typecheck": "tsc --noEmit -p tsconfig.json && pnpm -r --if-present run typecheck",
     "test": "pnpm -r --if-present run test"
   },
   "devDependencies": {
-    "typescript": "7.0.2"
+    "@eslint/js": "9.39.5",
+    "@next/eslint-plugin-next": "16.3.4",
+    "@typescript/native": "npm:typescript@7.0.2",
+    "@typescript-eslint/eslint-plugin": "8.69.0",
+    "@typescript-eslint/parser": "8.69.0",
+    "eslint": "9.39.5",
+    "eslint-config-prettier": "10.1.8",
+    "globals": "17.12.0",
+    "prettier": "3.9.6",
+    "typescript": "npm:@typescript/typescript6@6.0.2"
   }
 }

@@ -32,13 +32,17 @@ const navigationItems: readonly NavigationItem[] = [
   },
 ];
 
-function Navigation({ placement }: Readonly<{ placement: "sidebar" | "bottom" }>) {
+function Navigation({
+  placement,
+}: Readonly<{ placement: "sidebar" | "bottom" }>) {
   const pathname = usePathname();
 
   return (
     <nav
       className={placement === "sidebar" ? "sidebar-nav" : "bottom-nav"}
-      aria-label={placement === "sidebar" ? "Primary navigation" : "Mobile navigation"}
+      aria-label={
+        placement === "sidebar" ? "Primary navigation" : "Mobile navigation"
+      }
     >
       {navigationItems.map((item) => {
         const isActive = item.matches(pathname);
@@ -46,7 +50,13 @@ function Navigation({ placement }: Readonly<{ placement: "sidebar" | "bottom" }>
 
         return (
           <Link
-            aria-current={pathname === item.href ? "page" : isActive ? "location" : undefined}
+            aria-current={
+              pathname === item.href
+                ? "page"
+                : isActive
+                  ? "location"
+                  : undefined
+            }
             className="nav-link"
             data-active={isActive ? "true" : "false"}
             href={item.href}

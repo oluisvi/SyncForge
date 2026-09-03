@@ -8,7 +8,10 @@ test("the architecture workspace keeps its approved empty-state contract", async
   const source = await readSource("../src/app/page.tsx");
   assert.match(source, /Architecture workspace/);
   assert.match(source, /No architecture selected/);
-  assert.match(source, /Choose or create a project to begin mapping how your software works\./);
+  assert.match(
+    source,
+    /Choose or create a project to begin mapping how your software works\./,
+  );
   assert.match(source, /href="\/projects\/new"/);
 });
 

@@ -32,10 +32,17 @@ From the repository root:
 
 ```sh
 pnpm install --frozen-lockfile
+pnpm format:check
+pnpm lint
 pnpm typecheck
-pnpm build
 pnpm test
+pnpm build
+pnpm check
 ```
+
+TypeScript 7 is the project compiler. The root also aliases the TypeScript 6 API
+for ESLint compatibility during the TypeScript 7.0 transition; do not collapse
+the two entries until `typescript-eslint` supports the TypeScript 7 API.
 
 Database commands are documented in `packages/database/README.md`. Use committed migrations for schema changes and `db:migrate:deploy` outside local migration authoring.
 
@@ -54,7 +61,7 @@ Database commands are documented in `packages/database/README.md`. Use committed
 
 ## Validation
 
-Start with the smallest relevant test, then run affected workspace typecheck/build. Before committing a completed task, run the root typecheck, build, tests, `git diff --check`, and any task-specific security or migration checks.
+Start with the smallest relevant test, then run affected workspace typecheck/build. Before committing a completed task, run `pnpm check`, `git diff --check`, and any task-specific security or migration checks.
 
 For database changes, also run Prisma schema validation, formatting checks, migration status/application against an isolated database, and a real connectivity health check when the environment permits.
 

@@ -11,7 +11,11 @@ export class AppModule {
   static register(databaseConfig: DatabaseConfig): DynamicModule {
     return {
       module: AppModule,
-      imports: [DatabaseModule.register(databaseConfig), HealthModule, FallbackModule],
+      imports: [
+        DatabaseModule.register(databaseConfig),
+        HealthModule,
+        FallbackModule,
+      ],
     };
   }
 }

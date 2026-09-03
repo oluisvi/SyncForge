@@ -26,12 +26,17 @@ Copy `.env.example` for local development or `.env.test.example` for tests to th
 ## Baseline commands
 
 ```sh
+pnpm format:check
+pnpm lint
 pnpm typecheck
-pnpm build
 pnpm test
+pnpm build
+pnpm check
 ```
 
-Workspace packages expose their own `build`, `typecheck`, and `test` scripts as they are introduced. Root commands run matching scripts recursively when present.
+`pnpm check` runs the complete local/CI quality contract. Use `pnpm format:write`
+to apply the repository formatting policy. Workspace packages expose their own
+`build`, `typecheck`, and `test` scripts as they are introduced.
 
 ## Repository layout
 
