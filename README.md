@@ -42,7 +42,7 @@ to apply the repository formatting policy. Workspace packages expose their own
 
 ```text
 apps/
-  api/       NestJS API (Task 0.4)
+  api/       NestJS API with credential authentication (Tasks 0.4 and 1.1)
   web/       Next.js App Router web shell (Task 0.5)
 packages/    Shared packages created only when a concrete contract requires them
 ```

@@ -42,6 +42,13 @@ const publicErrors = new Map<number, PublicError>([
 
 const explicitErrors = new Map<string, PublicError>([
   [
+    "INVALID_CREDENTIALS",
+    {
+      code: "INVALID_CREDENTIALS",
+      message: "Credentials are invalid",
+    },
+  ],
+  [
     "VALIDATION_ERROR",
     { code: "VALIDATION_ERROR", message: "Request validation failed" },
   ],

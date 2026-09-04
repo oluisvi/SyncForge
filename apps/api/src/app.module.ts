@@ -2,6 +2,7 @@ import { Module } from "@nestjs/common";
 import type { DynamicModule } from "@nestjs/common";
 import type { DatabaseConfig } from "@syncforge/database";
 
+import { AuthModule } from "./auth/auth.module.js";
 import { FallbackModule } from "./common/http/fallback.module.js";
 import { DatabaseModule } from "./database/database.module.js";
 import { HealthModule } from "./health/health.module.js";
@@ -13,6 +14,7 @@ export class AppModule {
       module: AppModule,
       imports: [
         DatabaseModule.register(databaseConfig),
+        AuthModule,
         HealthModule,
         FallbackModule,
       ],

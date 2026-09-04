@@ -22,4 +22,7 @@ Use `db:migrate:dev -- --name <migration-name>` when intentionally creating a de
 
 For an isolated test database, run `pnpm --filter @syncforge/database db:dev:test -- --detach`. It uses database port `51224`, matching `.env.test.example`.
 
-The initial migration establishes only the migration workflow. Product tables belong to their specific domain tasks.
+The initial migration establishes the migration workflow. The authentication
+migration adds the `users` table with canonical unique emails and Argon2id hash
+storage. Session and authorization tables remain outside this task and must be
+introduced only by their owning roadmap work.

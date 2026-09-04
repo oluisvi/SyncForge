@@ -20,11 +20,37 @@ export type ApplicationFactory = (
   source: EnvironmentSource,
 ) => Promise<CreatedApplication>;
 
+interface AuthRequest {
+  readonly originalUrl?: string;
+}
+
+interface AuthResponse {
+  setHeader(name: string, value: string): void;
+}
+
+function preventAuthResponseCaching(
+  request: AuthRequest,
+  response: AuthResponse,
+  next: () => void,
+): void {
+  const path = request.originalUrl
+    ?.split("?", 1)[0]
+    ?.replace(/\/+$/, "")
+    .toLowerCase();
+
+  if (path === "/api/v1/auth/signup" || path === "/api/v1/auth/login") {
+    response.setHeader("Cache-Control", "no-store");
+  }
+
+  next();
+}
+
 export function configureApplication(
   app: INestApplication,
   config: ApiConfig,
 ): void {
   app.use(helmet());
+  app.use(preventAuthResponseCaching);
   app.enableCors({
     credentials: false,
     origin(
