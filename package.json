@@ -15,7 +15,7 @@
     "format:write": "prettier --write .",
     "lint": "eslint . --max-warnings 0",
     "lint:fix": "eslint . --fix --max-warnings 0",
-    "typecheck": "pnpm --filter @syncforge/config build && tsc --noEmit -p tsconfig.json && pnpm -r --if-present run typecheck",
+    "typecheck": "pnpm --filter @syncforge/config build && pnpm --filter @syncforge/database build && tsc --noEmit -p tsconfig.json && pnpm -r --if-present run typecheck",
     "test": "pnpm -r --if-present run test"
   },
   "devDependencies": {
