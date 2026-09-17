@@ -21,3 +21,8 @@ pnpm-lock.yaml
 *.eot
 *.pdf
 *.zip
+# Generated AI agent skills
+**/.agents/
+**/.claude/
+**/.windsurf/
+**/skills-lock.json

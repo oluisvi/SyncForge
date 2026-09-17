@@ -23,3 +23,8 @@ Thumbs.db
 .vscode/*
 !.vscode/extensions.json
 !.vscode/settings.json
+# Generated AI agent skills
+**/.agents/
+**/.claude/
+**/.windsurf/
+**/skills-lock.json
