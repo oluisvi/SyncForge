@@ -7,5 +7,16 @@ import { HealthModule } from "./health/health.module.js";
 import { OrganizationsModule } from "./organizations/organizations.module.js";
 import { ProjectsModule } from "./projects/projects.module.js";
 import { RepositoryModule } from "./repository/repository.module.js";
-@Module({ imports: [DatabaseModule, AccessModule, AuthModule, OrganizationsModule, ProjectsModule, CanvasModule, RepositoryModule, HealthModule] })
+@Module({
+  imports: [
+    DatabaseModule,
+    AccessModule,
+    AuthModule,
+    OrganizationsModule,
+    ProjectsModule,
+    CanvasModule,
+    RepositoryModule,
+    HealthModule,
+  ],
+})
 export class AppModule {}

@@ -7,6 +7,8 @@ const databaseEnvironmentSchema = {
 
 export function loadDatabaseConfig(source: EnvironmentSource) {
   const environment = loadEnvironment(databaseEnvironmentSchema, source);
-  return Object.freeze({ connectionString: environment.DATABASE_URL.toString() });
+  return Object.freeze({
+    connectionString: environment.DATABASE_URL.toString(),
+  });
 }
 export type DatabaseConfig = ReturnType<typeof loadDatabaseConfig>;

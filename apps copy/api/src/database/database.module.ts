@@ -6,7 +6,10 @@ import { DatabaseService } from "./database.service.js";
 @Global()
 @Module({
   providers: [
-    { provide: DATABASE, useFactory: () => createDatabaseClient(loadDatabaseConfig(process.env)) },
+    {
+      provide: DATABASE,
+      useFactory: () => createDatabaseClient(loadDatabaseConfig(process.env)),
+    },
     DatabaseService,
   ],
   exports: [DATABASE, DatabaseService],

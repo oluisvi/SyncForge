@@ -13,9 +13,16 @@ export class AuthRateLimiter {
       return;
     }
     current.count += 1;
-    if (current.count > limit) throw new TooManyRequestsException({ error: { code: "RATE_LIMITED", message: "Too many authentication attempts" } });
+    if (current.count > limit)
+      throw new TooManyRequestsException({
+        error: {
+          code: "RATE_LIMITED",
+          message: "Too many authentication attempts",
+        },
+      });
     if (this.entries.size > 5_000) {
-      for (const [entryKey, entry] of this.entries) if (entry.resetAt <= now) this.entries.delete(entryKey);
+      for (const [entryKey, entry] of this.entries)
+        if (entry.resetAt <= now) this.entries.delete(entryKey);
     }
   }
 }

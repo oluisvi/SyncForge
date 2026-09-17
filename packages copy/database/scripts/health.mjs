@@ -1,4 +1,8 @@
-import { checkDatabase, createDatabaseClient, loadDatabaseConfig } from "../dist/index.js";
+import {
+  checkDatabase,
+  createDatabaseClient,
+  loadDatabaseConfig,
+} from "../dist/index.js";
 const client = createDatabaseClient(loadDatabaseConfig(process.env));
 try {
   await checkDatabase(client);

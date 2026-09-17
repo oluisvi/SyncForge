@@ -2442,6 +2442,7 @@ Study recurring patterns, not only isolated visual tricks.
 # 71. ARCHITECTURE REFERENCES
 
 ## ERA Residence
+
 https://www.era-residence.com/
 
 Best for:
@@ -2452,6 +2453,7 @@ Best for:
 - large photography.
 
 ## LPAS
+
 https://lpas.com/
 
 Best for:
@@ -2461,6 +2463,7 @@ Best for:
 - image-first presentation.
 
 ## Senawa Studio
+
 https://senawastudio.com/
 
 Best for:
@@ -2470,6 +2473,7 @@ Best for:
 - editorial art direction.
 
 ## Studio Foundry
+
 https://studio-foundry.sujen.co/
 
 Best for:
@@ -2484,6 +2488,7 @@ Best for:
 # 72. INTERACTIVE / SPATIAL REFERENCES
 
 ## Igloo Inc.
+
 https://www.igloo.inc/
 
 Best for:
@@ -2494,6 +2499,7 @@ Best for:
 - immersive environments.
 
 ## STILL
+
 https://www.drinkstill.nz/
 
 Best for:
@@ -2508,6 +2514,7 @@ Best for:
 # 73. E-COMMERCE REFERENCES
 
 ## MANA
+
 https://en.manayerbamate.com/
 
 Best for:
@@ -2517,6 +2524,7 @@ Best for:
 - brand-led commerce.
 
 ## Bucks Sauce
+
 https://buckssauce.com/
 
 Best for:
@@ -2527,6 +2535,7 @@ Best for:
 - cart personality.
 
 ## Palmo
+
 https://www.palmo.co.in/
 
 Best for:
@@ -2536,6 +2545,7 @@ Best for:
 - gamification.
 
 ## Joy Rush
+
 https://drinkjoyrush.com/
 
 Best for:
@@ -2545,6 +2555,7 @@ Best for:
 - packaging-led UI.
 
 ## Nymphai Cosmetics
+
 https://nymphaicosmetics.com/
 
 Best for:
@@ -2554,6 +2565,7 @@ Best for:
 - 3D product storytelling.
 
 ## Bellussi
+
 https://bellussi.com/
 
 Best for:
@@ -2563,6 +2575,7 @@ Best for:
 - product culture and place.
 
 ## Voxelo
+
 https://www.voxelo.ai/
 
 Best for:
@@ -2576,6 +2589,7 @@ Best for:
 # 74. TECHNICAL PRODUCT REFERENCES
 
 ## Radian
+
 https://www.rideradian.com/
 
 Best for:
@@ -2584,6 +2598,7 @@ Best for:
 - technical product storytelling.
 
 ## Orbea Rallon
+
 https://www.orbea.com/es-es/catalogo/bicicletas-montana-rallon
 
 Best for:
@@ -2592,6 +2607,7 @@ Best for:
 - progressive disclosure.
 
 ## Insta360 Luna Ultra
+
 https://www.insta360.com/product/insta360-luna-ultra
 
 Best for:
@@ -2603,6 +2619,7 @@ Best for:
 # 75. TECHNOLOGY / SAAS REFERENCE
 
 ## Filmbot
+
 https://filmbot.com/
 
 Best for:
@@ -2616,46 +2633,55 @@ Best for:
 # 76. UI REFERENCE LIBRARY
 
 ## Refero
+
 https://refero.design/
 
 Real product UX.
 
 ## Origin UI
+
 https://originui.com/
 
 Clean UI primitives.
 
 ## Skiper UI
+
 https://skiper-ui.com/
 
 Creative React interaction.
 
 ## Cult UI
+
 https://www.cult-ui.com/
 
 Experimental premium UI.
 
 ## React Bits
+
 https://www.reactbits.dev/
 
 Animated components and effects.
 
 ## Uiverse
+
 https://uiverse.io/
 
 Microinteractions.
 
 ## Aceternity UI
+
 https://ui.aceternity.com/
 
 Creative landing patterns.
 
 ## Kokonut UI
+
 https://kokonutui.com/
 
 React/Next/Tailwind UI.
 
 ## Bklit UI
+
 https://bklit.com/
 
 Dashboards and charts.
@@ -2665,26 +2691,31 @@ Dashboards and charts.
 # 77. MOTION / IMPLEMENTATION REFERENCES
 
 ## Motion Sites
+
 https://motionsites.ai/
 
 Motion inspiration.
 
 ## GSAP
+
 https://gsap.com/
 
 Advanced timeline and scroll choreography.
 
 ## Motion
+
 https://motion.dev/
 
 React UI motion.
 
 ## Anime.js
+
 https://animejs.com/
 
 Lightweight timelines and SVG/DOM motion.
 
 ## Three.js
+
 https://threejs.org/
 
 WebGL and spatial experiences.
@@ -2696,11 +2727,13 @@ WebGL and spatial experiences.
 Use established design systems as **research references**, not as visual identities to copy.
 
 ## W3C WCAG
+
 https://www.w3.org/WAI/standards-guidelines/wcag/
 
 Accessibility foundation.
 
 ## Carbon Design System
+
 https://carbondesignsystem.com/
 
 Useful for:
@@ -2712,6 +2745,7 @@ Useful for:
 - component rigor.
 
 ## Atlassian Design System
+
 https://atlassian.design/
 
 Useful for:
@@ -2722,6 +2756,7 @@ Useful for:
 - enterprise product patterns.
 
 ## GOV.UK Design System
+
 https://design-system.service.gov.uk/
 
 Useful for:
@@ -2733,6 +2768,7 @@ Useful for:
 - accessible patterns.
 
 ## U.S. Web Design System
+
 https://designsystem.digital.gov/
 
 Useful for:
@@ -2742,6 +2778,7 @@ Useful for:
 - task-oriented services.
 
 ## Apple Human Interface Guidelines
+
 https://developer.apple.com/design/human-interface-guidelines/
 
 Useful for:
@@ -2756,24 +2793,24 @@ Useful for:
 
 # 79. NICHE ADAPTATION MATRIX
 
-| Niche | Primary Priorities | Recommended Density | Motion Level | Main Visual Strength |
-|---|---|---:|---:|---|
-| Finance | Trust, data, precision | Compact/Comfortable | Low–Medium | Data hierarchy |
-| Education | Clarity, progress, motivation | Comfortable | Medium | Progress & content |
-| Blog/Editorial | Reading, discovery | Spacious | Low–Medium | Typography/media |
-| Portfolio | Authorship, work | Spacious | Medium–High | Case studies |
-| E-commerce | Product, trust, conversion | Comfortable | Medium–High | Product storytelling |
-| SaaS | Product proof, clarity | Comfortable | Medium | Workflow/UI |
-| Dashboard | Scanability, action | Compact | Low | Information density |
-| Architecture | Space, imagery | Spacious | High when justified | Photography/spatial |
-| Real Estate | Atmosphere, plans, inquiry | Spacious | Medium–High | Space/location |
-| Public Service | Completion, accessibility | Comfortable | Low | Content/forms |
-| School | Navigation, audiences, content | Comfortable | Low–Medium | Information architecture |
-| Entertainment | Emotion, discovery | Comfortable/Spacious | High | Media/motion |
-| Marketplace | Discovery, comparison | Comfortable | Medium | Search/filter/trust |
-| Hospitality | Atmosphere, booking | Spacious | Medium | Imagery |
-| AI Product | Product proof, distinction | Comfortable | Medium–High | Workflow/signature interaction |
-| Technical Hardware | Demonstration, specs | Comfortable | Medium–High | Product visualization |
+| Niche              | Primary Priorities             |  Recommended Density |        Motion Level | Main Visual Strength           |
+| ------------------ | ------------------------------ | -------------------: | ------------------: | ------------------------------ |
+| Finance            | Trust, data, precision         |  Compact/Comfortable |          Low–Medium | Data hierarchy                 |
+| Education          | Clarity, progress, motivation  |          Comfortable |              Medium | Progress & content             |
+| Blog/Editorial     | Reading, discovery             |             Spacious |          Low–Medium | Typography/media               |
+| Portfolio          | Authorship, work               |             Spacious |         Medium–High | Case studies                   |
+| E-commerce         | Product, trust, conversion     |          Comfortable |         Medium–High | Product storytelling           |
+| SaaS               | Product proof, clarity         |          Comfortable |              Medium | Workflow/UI                    |
+| Dashboard          | Scanability, action            |              Compact |                 Low | Information density            |
+| Architecture       | Space, imagery                 |             Spacious | High when justified | Photography/spatial            |
+| Real Estate        | Atmosphere, plans, inquiry     |             Spacious |         Medium–High | Space/location                 |
+| Public Service     | Completion, accessibility      |          Comfortable |                 Low | Content/forms                  |
+| School             | Navigation, audiences, content |          Comfortable |          Low–Medium | Information architecture       |
+| Entertainment      | Emotion, discovery             | Comfortable/Spacious |                High | Media/motion                   |
+| Marketplace        | Discovery, comparison          |          Comfortable |              Medium | Search/filter/trust            |
+| Hospitality        | Atmosphere, booking            |             Spacious |              Medium | Imagery                        |
+| AI Product         | Product proof, distinction     |          Comfortable |         Medium–High | Workflow/signature interaction |
+| Technical Hardware | Demonstration, specs           |          Comfortable |         Medium–High | Product visualization          |
 
 ---
 

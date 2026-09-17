@@ -1,7 +1,13 @@
 import { Injectable, MessageEvent } from "@nestjs/common";
 import { Observable } from "rxjs";
 
-export interface PresenceState { userId: string; email: string; nodeId?: string; action?: string; lastSeenAt: number; }
+export interface PresenceState {
+  userId: string;
+  email: string;
+  nodeId?: string;
+  action?: string;
+  lastSeenAt: number;
+}
 type Listener = (event: MessageEvent) => void;
 
 @Injectable()
@@ -13,9 +19,13 @@ export class RealtimeService {
     return new Observable<MessageEvent>((subscriber) => {
       const listener: Listener = (event) => subscriber.next(event);
       const set = this.listeners.get(canvasId) ?? new Set<Listener>();
-      set.add(listener); this.listeners.set(canvasId, set);
+      set.add(listener);
+      this.listeners.set(canvasId, set);
       subscriber.next({ type: "ready", data: { connected: true } });
-      return () => { set.delete(listener); if (set.size === 0) this.listeners.delete(canvasId); };
+      return () => {
+        set.delete(listener);
+        if (set.size === 0) this.listeners.delete(canvasId);
+      };
     });
   }
 
@@ -24,11 +34,16 @@ export class RealtimeService {
     for (const listener of this.listeners.get(canvasId) ?? []) listener(event);
   }
 
-  heartbeat(canvasId: string, state: Omit<PresenceState, "lastSeenAt">): PresenceState[] {
+  heartbeat(
+    canvasId: string,
+    state: Omit<PresenceState, "lastSeenAt">,
+  ): PresenceState[] {
     const now = Date.now();
-    const canvasPresence = this.presence.get(canvasId) ?? new Map<string, PresenceState>();
+    const canvasPresence =
+      this.presence.get(canvasId) ?? new Map<string, PresenceState>();
     canvasPresence.set(state.userId, { ...state, lastSeenAt: now });
-    for (const [userId, item] of canvasPresence) if (now - item.lastSeenAt > 45_000) canvasPresence.delete(userId);
+    for (const [userId, item] of canvasPresence)
+      if (now - item.lastSeenAt > 45_000) canvasPresence.delete(userId);
     this.presence.set(canvasId, canvasPresence);
     const active = [...canvasPresence.values()];
     this.publish(canvasId, "presence", active);
@@ -39,7 +54,8 @@ export class RealtimeService {
     const now = Date.now();
     const canvasPresence = this.presence.get(canvasId);
     if (!canvasPresence) return [];
-    for (const [userId, item] of canvasPresence) if (now - item.lastSeenAt > 45_000) canvasPresence.delete(userId);
+    for (const [userId, item] of canvasPresence)
+      if (now - item.lastSeenAt > 45_000) canvasPresence.delete(userId);
     return [...canvasPresence.values()];
   }
 }

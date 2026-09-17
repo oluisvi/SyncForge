@@ -4,10 +4,14 @@ export interface EnvironmentRule<T> {
   readonly parse: (value: string | undefined, key: string) => T;
 }
 
-export type EnvironmentSchema = Readonly<Record<string, EnvironmentRule<unknown>>>;
+export type EnvironmentSchema = Readonly<
+  Record<string, EnvironmentRule<unknown>>
+>;
 
 export type InferEnvironment<TSchema extends EnvironmentSchema> = {
-  readonly [TKey in keyof TSchema]: TSchema[TKey] extends EnvironmentRule<infer TValue>
+  readonly [TKey in keyof TSchema]: TSchema[TKey] extends EnvironmentRule<
+    infer TValue
+  >
     ? TValue
     : never;
 };
@@ -43,7 +47,9 @@ export function booleanValue(): EnvironmentRule<boolean> {
   };
 }
 
-export function urlValue(options: { readonly protocols?: readonly string[] } = {}): EnvironmentRule<URL> {
+export function urlValue(
+  options: { readonly protocols?: readonly string[] } = {},
+): EnvironmentRule<URL> {
   return {
     parse(value, key) {
       const normalized = requiredValue(value, key);
@@ -54,52 +60,74 @@ export function urlValue(options: { readonly protocols?: readonly string[] } = {
         throw new Error(`${key} must be a valid absolute URL`);
       }
       if (options.protocols && !options.protocols.includes(parsed.protocol)) {
-        throw new Error(`${key} must use one of: ${options.protocols.join(", ")}`);
+        throw new Error(
+          `${key} must use one of: ${options.protocols.join(", ")}`,
+        );
       }
       return parsed;
     },
   };
 }
 
-export function integerValue(options: { readonly min?: number; readonly max?: number } = {}): EnvironmentRule<number> {
+export function integerValue(
+  options: { readonly min?: number; readonly max?: number } = {},
+): EnvironmentRule<number> {
   return {
     parse(value, key) {
       const parsed = Number(requiredValue(value, key));
-      if (!Number.isSafeInteger(parsed)) throw new Error(`${key} must be a safe integer`);
-      if (options.min !== undefined && parsed < options.min) throw new Error(`${key} must be at least ${options.min}`);
-      if (options.max !== undefined && parsed > options.max) throw new Error(`${key} must be at most ${options.max}`);
+      if (!Number.isSafeInteger(parsed))
+        throw new Error(`${key} must be a safe integer`);
+      if (options.min !== undefined && parsed < options.min)
+        throw new Error(`${key} must be at least ${options.min}`);
+      if (options.max !== undefined && parsed > options.max)
+        throw new Error(`${key} must be at most ${options.max}`);
       return parsed;
     },
   };
 }
 
-export function enumValue<const TValues extends readonly [string, ...string[]]>(values: TValues): EnvironmentRule<TValues[number]> {
+export function enumValue<const TValues extends readonly [string, ...string[]]>(
+  values: TValues,
+): EnvironmentRule<TValues[number]> {
   return {
     parse(value, key) {
       const normalized = requiredValue(value, key);
-      if (!values.includes(normalized)) throw new Error(`${key} must be one of: ${values.join(", ")}`);
+      if (!values.includes(normalized))
+        throw new Error(`${key} must be one of: ${values.join(", ")}`);
       return normalized;
     },
   };
 }
 
-export function optional<TValue>(rule: EnvironmentRule<TValue>): EnvironmentRule<TValue | undefined> {
+export function optional<TValue>(
+  rule: EnvironmentRule<TValue>,
+): EnvironmentRule<TValue | undefined> {
   return {
     parse(value, key) {
-      return value === undefined || value.trim() === "" ? undefined : rule.parse(value, key);
+      return value === undefined || value.trim() === ""
+        ? undefined
+        : rule.parse(value, key);
     },
   };
 }
 
-export function withDefault<TValue>(rule: EnvironmentRule<TValue>, fallback: TValue): EnvironmentRule<TValue> {
+export function withDefault<TValue>(
+  rule: EnvironmentRule<TValue>,
+  fallback: TValue,
+): EnvironmentRule<TValue> {
   return {
     parse(value, key) {
-      return value === undefined || value.trim() === "" ? fallback : rule.parse(value, key);
+      return value === undefined || value.trim() === ""
+        ? fallback
+        : rule.parse(value, key);
     },
   };
 }
 
-export function loadEnvironment<const TSchema extends EnvironmentSchema>(schema: TSchema, source: EnvironmentSource): Readonly<InferEnvironment<TSchema>> {
+export function loadEnvironment<const TSchema extends EnvironmentSchema>(
+  schema: TSchema,
+  source: EnvironmentSource,
+): Readonly<InferEnvironment<TSchema>> {
   const result: Record<string, unknown> = {};
   const issues: string[] = [];
   for (const key of Object.keys(schema)) {

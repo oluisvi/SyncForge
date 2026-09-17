@@ -3,6 +3,7 @@
 NestJS API for authentication, organizations, projects, architecture canvases, comments/history, realtime event streaming, and deterministic GitHub repository analysis.
 
 ## Security model
+
 - Opaque 256-bit session token; only SHA-256 hash is stored.
 - HttpOnly, SameSite=Lax session cookie; `Secure` is environment-controlled.
 - Every organization/project/canvas endpoint performs membership authorization.

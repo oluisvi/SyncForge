@@ -170,10 +170,12 @@ Crie uma composição apropriada para mobile.
 Exemplo:
 
 Desktop:
+
 - abertura lateral;
 - painéis movendo-se para esquerda e direita.
 
 Mobile:
+
 - abertura vertical;
 - painéis movendo-se para cima e para baixo.
 
@@ -301,11 +303,13 @@ A animação deve funcionar como parte real da estratégia de carregamento, e n�
 Informe objetivamente:
 
 ### Changed
+
 - componentes alterados;
 - estados e handshake implementados;
 - comportamento desktop/mobile.
 
 ### Preserved
+
 - navegação;
 - scroll;
 - câmera;
@@ -314,6 +318,7 @@ Informe objetivamente:
 - conversão.
 
 ### Verified
+
 - testes;
 - typecheck;
 - build;
@@ -323,4 +328,5 @@ Informe objetivamente:
 - timeout de segurança.
 
 ### Remaining
+
 Somente limitações reais dependentes de assets, infraestrutura ou dispositivos externos.

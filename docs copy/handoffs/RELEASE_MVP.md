@@ -1,9 +1,11 @@
 # SyncForge MVP — Final Handoff
 
 ## Delivered scope
+
 The codebase now covers the briefing's initial MVP pillars: visualization, collaboration, code intelligence and exploration.
 
 ## Runtime architecture
+
 - Next.js web application.
 - NestJS API.
 - PostgreSQL/Prisma persistence.
@@ -12,6 +14,7 @@ The codebase now covers the briefing's initial MVP pillars: visualization, colla
 - Deterministic GitHub TypeScript/JavaScript repository analysis.
 
 ## Verification evidence in this delivery environment
+
 - JSON manifests parsed successfully.
 - TypeScript/TSX syntax sweep completed across the source tree.
 - Pure analyzer, session-cookie and Mermaid helpers exercised directly.
@@ -19,6 +22,7 @@ The codebase now covers the briefing's initial MVP pillars: visualization, colla
 - ZIP integrity is verified as part of packaging.
 
 ## External release gates
+
 This execution environment provides Node 22, no pnpm and no PostgreSQL. The repository requires Node 24+ and pnpm 11. Before production deployment run on a supported machine:
 
 ```sh

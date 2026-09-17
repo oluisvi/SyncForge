@@ -5,5 +5,7 @@ import { DATABASE } from "./database.constants.js";
 @Injectable()
 export class DatabaseService implements OnModuleDestroy {
   constructor(@Inject(DATABASE) readonly client: DatabaseClient) {}
-  async onModuleDestroy() { await this.client.$disconnect(); }
+  async onModuleDestroy() {
+    await this.client.$disconnect();
+  }
 }

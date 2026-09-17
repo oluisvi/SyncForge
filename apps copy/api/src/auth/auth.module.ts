@@ -10,7 +10,15 @@ import { SessionService } from "./session.service.js";
 
 @Module({
   controllers: [AuthController],
-  providers: [AuthRepository, AuthRateLimiter, AuthRateLimitGuard, AuthService, PasswordHasher, SessionService, SessionGuard],
+  providers: [
+    AuthRepository,
+    AuthRateLimiter,
+    AuthRateLimitGuard,
+    AuthService,
+    PasswordHasher,
+    SessionService,
+    SessionGuard,
+  ],
   exports: [SessionGuard, SessionService],
 })
 export class AuthModule {}
