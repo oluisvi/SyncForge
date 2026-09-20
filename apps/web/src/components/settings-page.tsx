@@ -1,0 +1,178 @@
+"use client";
+import { useEffect, useState } from "react";
+import type { FormEvent } from "react";
+import { api, ApiError } from "@/lib/api";
+import type { OrganizationMembership } from "@/lib/types";
+
+type Member = {
+  id: string;
+  role: "OWNER" | "ADMIN" | "MEMBER";
+  createdAt: string;
+  user: { id: string; email: string };
+};
+export function SettingsPage() {
+  const [orgs, setOrgs] = useState<OrganizationMembership[]>([]),
+    [active, setActive] = useState(""),
+    [members, setMembers] = useState<Member[]>([]),
+    [email, setEmail] = useState(""),
+    [role, setRole] = useState<"ADMIN" | "MEMBER">("MEMBER"),
+    [error, setError] = useState("");
+  useEffect(() => {
+    api<OrganizationMembership[]>("/organizations")
+      .then((items) => {
+        setOrgs(items);
+        if (items[0]) setActive(items[0].organization.id);
+      })
+      .catch(() => setError("Could not load workspace settings."));
+  }, []);
+  useEffect(() => {
+    if (active)
+      api<Member[]>(`/organizations/${active}/members`)
+        .then(setMembers)
+        .catch(() => setMembers([]));
+  }, [active]);
+  async function add(event: FormEvent) {
+    event.preventDefault();
+    setError("");
+    try {
+      await api(`/organizations/${active}/members`, {
+        method: "POST",
+        body: JSON.stringify({ email, role }),
+      });
+      setEmail("");
+      setMembers(await api(`/organizations/${active}/members`));
+    } catch (cause) {
+      setError(
+        cause instanceof ApiError ? cause.message : "Could not add member",
+      );
+    }
+  }
+  const org = orgs.find((o) => o.organization.id === active);
+  return (
+    <div className="settings-page">
+      <header className="page-header compact">
+        <div>
+          <span className="eyebrow">Workspace controls</span>
+          <h1>Settings</h1>
+          <p>
+            Manage collaboration boundaries and keep repository access
+            deliberate.
+          </p>
+        </div>
+      </header>
+      <div className="settings-grid">
+        <aside className="settings-nav">
+          <h3>Workspaces</h3>
+          {orgs.map((item) => (
+            <button
+              key={item.organization.id}
+              data-active={active === item.organization.id ? "true" : "false"}
+              onClick={() => setActive(item.organization.id)}
+            >
+              <span>{item.organization.name.slice(0, 1).toUpperCase()}</span>
+              <div>
+                <strong>{item.organization.name}</strong>
+                <small>{item.role.toLowerCase()}</small>
+              </div>
+            </button>
+          ))}
+        </aside>
+        <section className="settings-card">
+          <div className="settings-card-head">
+            <div>
+              <span className="eyebrow">Team access</span>
+              <h2>{org?.organization.name ?? "Workspace"}</h2>
+            </div>
+            <span className="security-badge">RBAC enabled</span>
+          </div>
+          <p>
+            Members can only access projects through explicit organization
+            membership. Owner privileges cannot be transferred by the basic MVP
+            controls.
+          </p>
+          <div className="member-list">
+            {members.map((m) => (
+              <article key={m.id}>
+                <span className="member-avatar">
+                  {m.user.email.slice(0, 2).toUpperCase()}
+                </span>
+                <div>
+                  <strong>{m.user.email}</strong>
+                  <small>
+                    Joined {new Date(m.createdAt).toLocaleDateString()}
+                  </small>
+                </div>
+                <select
+                  aria-label={`Role for ${m.user.email}`}
+                  value={m.role}
+                  disabled={m.role === "OWNER"}
+                  onChange={async (e) => {
+                    const next = e.target.value as "ADMIN" | "MEMBER";
+                    await api(`/organizations/${active}/members/${m.id}`, {
+                      method: "PATCH",
+                      body: JSON.stringify({ role: next }),
+                    });
+                    setMembers((x) =>
+                      x.map((i) => (i.id === m.id ? { ...i, role: next } : i)),
+                    );
+                  }}
+                >
+                  <option>OWNER</option>
+                  <option>ADMIN</option>
+                  <option>MEMBER</option>
+                </select>
+                {m.role !== "OWNER" && (
+                  <button
+                    className="icon-danger"
+                    title="Remove member"
+                    onClick={async () => {
+                      await api(`/organizations/${active}/members/${m.id}`, {
+                        method: "DELETE",
+                      });
+                      setMembers((x) => x.filter((i) => i.id !== m.id));
+                    }}
+                  >
+                    ×
+                  </button>
+                )}
+              </article>
+            ))}
+          </div>
+          <form className="invite-form" onSubmit={add}>
+            <div>
+              <h3>Add a teammate</h3>
+              <p>The user must already have a SyncForge account.</p>
+            </div>
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="teammate@company.com"
+            />
+            <select
+              value={role}
+              onChange={(e) => setRole(e.target.value as "ADMIN" | "MEMBER")}
+            >
+              <option value="MEMBER">Member</option>
+              <option value="ADMIN">Admin</option>
+            </select>
+            <button className="primary-button">Add member</button>
+          </form>
+          {error && <div className="form-error">{error}</div>}
+          <div className="privacy-card">
+            <div className="privacy-icon">⌁</div>
+            <div>
+              <strong>Repository privacy</strong>
+              <p>
+                Analysis excludes secrets, generated output and vendor
+                directories. Source content is processed transiently and is not
+                stored in SyncForge's repository model.
+              </p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  );
+}

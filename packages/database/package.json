@@ -1,6 +1,6 @@
 {
   "name": "@syncforge/database",
-  "version": "0.0.0",
+  "version": "1.0.0-mvp",
   "private": true,
   "type": "module",
   "exports": {
@@ -13,8 +13,6 @@
     "build": "prisma generate && tsc -p tsconfig.json",
     "typecheck": "prisma generate && tsc --noEmit -p tsconfig.json",
     "test": "pnpm run build && node --test test/*.test.mjs",
-    "db:dev": "prisma dev --name syncforge",
-    "db:dev:test": "prisma dev --name syncforge-test --port 51223 --db-port 51224 --shadow-db-port 51225",
     "db:generate": "prisma generate",
     "db:migrate:dev": "prisma migrate dev",
     "db:migrate:deploy": "prisma migrate deploy",

@@ -1,20 +1,9 @@
-import {
-  Controller,
-  Get,
-  HttpCode,
-  HttpStatus,
-  VERSION_NEUTRAL,
-} from "@nestjs/common";
-
+import { Controller, Get } from "@nestjs/common";
 import { HealthService } from "./health.service.js";
-
-@Controller({ path: "health", version: VERSION_NEUTRAL })
+@Controller({ path: "health", version: "1" })
 export class HealthController {
   constructor(private readonly health: HealthService) {}
-
-  @Get()
-  @HttpCode(HttpStatus.OK)
-  check() {
-    return this.health.check();
+  @Get() status() {
+    return this.health.status();
   }
 }

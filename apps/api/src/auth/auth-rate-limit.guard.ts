@@ -1,36 +1,21 @@
 import { Injectable } from "@nestjs/common";
 import type { CanActivate, ExecutionContext } from "@nestjs/common";
-import { Reflector } from "@nestjs/core";
-
-import { AUTH_RATE_LIMIT_ENDPOINT } from "./auth.constants.js";
 import { AuthRateLimiter } from "./auth-rate-limiter.service.js";
 
-interface HttpRequestWithSocket {
-  readonly socket?: {
-    readonly remoteAddress?: string;
-  };
-}
-
+type RequestLike = {
+  ip?: string;
+  socket?: { remoteAddress?: string };
+  route?: { path?: string };
+};
 @Injectable()
 export class AuthRateLimitGuard implements CanActivate {
-  constructor(
-    private readonly limiter: AuthRateLimiter,
-    private readonly reflector: Reflector,
-  ) {}
-
+  constructor(private readonly limiter: AuthRateLimiter) {}
   canActivate(context: ExecutionContext): boolean {
-    const endpoint = this.reflector.get<string>(
-      AUTH_RATE_LIMIT_ENDPOINT,
-      context.getHandler(),
-    );
-
-    if (endpoint === undefined) {
-      return true;
-    }
-
-    const request = context.switchToHttp().getRequest<HttpRequestWithSocket>();
-    this.limiter.consume(request.socket?.remoteAddress ?? "unknown", endpoint);
-
+    const request = context.switchToHttp().getRequest<RequestLike>();
+    const remoteAddress =
+      request.socket?.remoteAddress ?? request.ip ?? "unknown";
+    const route = request.route?.path ?? "auth";
+    this.limiter.check(`${remoteAddress}:${route}`);
     return true;
   }
 }

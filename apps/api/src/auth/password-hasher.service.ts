@@ -1,37 +1,32 @@
 import { Injectable } from "@nestjs/common";
-import { argon2id, hash, verify } from "argon2";
+import * as argon2 from "argon2";
 
-const HASH_OPTIONS = Object.freeze({
-  type: argon2id,
-  memoryCost: 19_456,
+const options = {
+  type: argon2.argon2id,
+  memoryCost: 19 * 1024,
   timeCost: 2,
   parallelism: 1,
-  hashLength: 32,
-});
-
-// Precomputed with HASH_OPTIONS so an unknown account never pays an extra hash
-// during process cold start. It is not a credential and can safely be public.
-const DUMMY_HASH =
-  "$argon2id$v=19$m=19456,p=1,t=2$isQXNd6G783Z49PsdwjKaQ$8gs7cONMCX1o2NmeYVCtvIyLE90/3o/7rrizctVnxg8";
+} as const;
 
 @Injectable()
 export class PasswordHasher {
-  hash(password: string): Promise<string> {
-    return hash(password, HASH_OPTIONS);
+  private dummyHashPromise: Promise<string> | undefined;
+  hash(password: string) {
+    return argon2.hash(password, options);
   }
-
-  async verify(passwordHash: string, password: string): Promise<boolean> {
-    try {
-      return await verify(passwordHash, password);
-    } catch {
-      return false;
-    }
+  verify(hash: string, password: string) {
+    return argon2.verify(hash, password);
   }
-
+  private dummyHash() {
+    this.dummyHashPromise ??= this.hash("syncforge-dummy-password-never-used");
+    return this.dummyHashPromise;
+  }
   async verifyStoredOrDummy(
-    passwordHash: string | undefined,
+    hash: string | undefined,
     password: string,
   ): Promise<boolean> {
-    return this.verify(passwordHash ?? DUMMY_HASH, password);
+    const target = hash ?? (await this.dummyHash());
+    const matches = await this.verify(target, password);
+    return Boolean(hash) && matches;
   }
 }

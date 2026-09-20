@@ -1,15 +1,12 @@
 import {
-  checkDatabaseHealth,
+  checkDatabase,
   createDatabaseClient,
   loadDatabaseConfig,
 } from "../dist/index.js";
-
-const config = loadDatabaseConfig(process.env);
-const client = createDatabaseClient(config);
-
+const client = createDatabaseClient(loadDatabaseConfig(process.env));
 try {
-  const result = await checkDatabaseHealth(client);
-  console.log(JSON.stringify(result));
+  await checkDatabase(client);
+  console.log("database: ok");
 } finally {
   await client.$disconnect();
 }

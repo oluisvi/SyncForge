@@ -1,1 +1,1 @@
-export const DATABASE_CONFIG = Symbol("DATABASE_CONFIG");
+export const DATABASE = Symbol("SYNCFORGE_DATABASE");

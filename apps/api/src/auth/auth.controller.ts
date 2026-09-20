@@ -1,34 +1,86 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Post,
-  SetMetadata,
+  Req,
+  Res,
   UseGuards,
 } from "@nestjs/common";
-
-import { AUTH_RATE_LIMIT_ENDPOINT } from "./auth.constants.js";
-import { LoginDto, SignupDto } from "./auth.dto.js";
+import { loadApiConfig } from "../config/api.config.js";
 import { AuthRateLimitGuard } from "./auth-rate-limit.guard.js";
+import { LoginDto, SignupDto } from "./auth.dto.js";
 import { AuthService } from "./auth.service.js";
+import { CurrentUser, SessionGuard } from "./authenticated.js";
+import type {
+  AuthenticatedRequest,
+  AuthenticatedUser,
+} from "./authenticated.js";
+import {
+  buildExpiredSessionCookie,
+  buildSessionCookie,
+} from "./session-cookie.js";
+import { SessionService } from "./session.service.js";
+
+type HeaderResponse = { setHeader(name: string, value: string): void };
 
 @Controller({ path: "auth", version: "1" })
-@UseGuards(AuthRateLimitGuard)
 export class AuthController {
-  constructor(private readonly auth: AuthService) {}
+  private readonly config = loadApiConfig(process.env);
+  constructor(
+    private readonly auth: AuthService,
+    private readonly sessions: SessionService,
+  ) {}
 
   @Post("signup")
   @HttpCode(HttpStatus.ACCEPTED)
-  @SetMetadata(AUTH_RATE_LIMIT_ENDPOINT, "signup")
+  @UseGuards(AuthRateLimitGuard)
   signup(@Body() body: SignupDto) {
     return this.auth.signup(body.email, body.password);
   }
 
   @Post("login")
   @HttpCode(HttpStatus.OK)
-  @SetMetadata(AUTH_RATE_LIMIT_ENDPOINT, "login")
-  login(@Body() body: LoginDto) {
-    return this.auth.login(body.email, body.password);
+  @UseGuards(AuthRateLimitGuard)
+  async login(
+    @Body() body: LoginDto,
+    @Res({ passthrough: true }) response: HeaderResponse,
+  ) {
+    const result = await this.auth.login(body.email, body.password);
+    response.setHeader(
+      "Set-Cookie",
+      buildSessionCookie(
+        result.token,
+        result.expiresAt,
+        this.config.sessionCookieSecure,
+      ),
+    );
+    return {
+      authenticated: true,
+      user: result.user,
+      expiresAt: result.expiresAt,
+    };
+  }
+
+  @Get("me")
+  @UseGuards(SessionGuard)
+  me(@CurrentUser() user: AuthenticatedUser) {
+    return { authenticated: true, user };
+  }
+
+  @Post("logout")
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(SessionGuard)
+  async logout(
+    @Req() request: AuthenticatedRequest,
+    @Res({ passthrough: true }) response: HeaderResponse,
+  ) {
+    await this.sessions.revoke(request.sessionToken);
+    response.setHeader(
+      "Set-Cookie",
+      buildExpiredSessionCookie(this.config.sessionCookieSecure),
+    );
   }
 }

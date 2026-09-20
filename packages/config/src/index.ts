@@ -28,17 +28,22 @@ export class EnvironmentValidationError extends Error {
 
 function requiredValue(value: string | undefined, key: string): string {
   const normalized = value?.trim();
-
-  if (!normalized) {
-    throw new Error(`${key} is required`);
-  }
-
+  if (!normalized) throw new Error(`${key} is required`);
   return normalized;
 }
 
 export function stringValue(): EnvironmentRule<string> {
+  return { parse: requiredValue };
+}
+
+export function booleanValue(): EnvironmentRule<boolean> {
   return {
-    parse: requiredValue,
+    parse(value, key) {
+      const normalized = requiredValue(value, key).toLowerCase();
+      if (normalized === "true" || normalized === "1") return true;
+      if (normalized === "false" || normalized === "0") return false;
+      throw new Error(`${key} must be true or false`);
+    },
   };
 }
 
@@ -49,19 +54,16 @@ export function urlValue(
     parse(value, key) {
       const normalized = requiredValue(value, key);
       let parsed: URL;
-
       try {
         parsed = new URL(normalized);
       } catch {
         throw new Error(`${key} must be a valid absolute URL`);
       }
-
       if (options.protocols && !options.protocols.includes(parsed.protocol)) {
         throw new Error(
           `${key} must use one of: ${options.protocols.join(", ")}`,
         );
       }
-
       return parsed;
     },
   };
@@ -72,21 +74,13 @@ export function integerValue(
 ): EnvironmentRule<number> {
   return {
     parse(value, key) {
-      const normalized = requiredValue(value, key);
-      const parsed = Number(normalized);
-
-      if (!Number.isSafeInteger(parsed)) {
+      const parsed = Number(requiredValue(value, key));
+      if (!Number.isSafeInteger(parsed))
         throw new Error(`${key} must be a safe integer`);
-      }
-
-      if (options.min !== undefined && parsed < options.min) {
+      if (options.min !== undefined && parsed < options.min)
         throw new Error(`${key} must be at least ${options.min}`);
-      }
-
-      if (options.max !== undefined && parsed > options.max) {
+      if (options.max !== undefined && parsed > options.max)
         throw new Error(`${key} must be at most ${options.max}`);
-      }
-
       return parsed;
     },
   };
@@ -98,11 +92,8 @@ export function enumValue<const TValues extends readonly [string, ...string[]]>(
   return {
     parse(value, key) {
       const normalized = requiredValue(value, key);
-
-      if (!values.includes(normalized)) {
+      if (!values.includes(normalized))
         throw new Error(`${key} must be one of: ${values.join(", ")}`);
-      }
-
       return normalized;
     },
   };
@@ -139,24 +130,15 @@ export function loadEnvironment<const TSchema extends EnvironmentSchema>(
 ): Readonly<InferEnvironment<TSchema>> {
   const result: Record<string, unknown> = {};
   const issues: string[] = [];
-
   for (const key of Object.keys(schema)) {
     const rule = schema[key];
-
-    if (!rule) {
-      continue;
-    }
-
+    if (!rule) continue;
     try {
       result[key] = rule.parse(source[key], key);
     } catch (error) {
       issues.push(error instanceof Error ? error.message : `${key} is invalid`);
     }
   }
-
-  if (issues.length > 0) {
-    throw new EnvironmentValidationError(issues);
-  }
-
+  if (issues.length > 0) throw new EnvironmentValidationError(issues);
   return Object.freeze(result) as Readonly<InferEnvironment<TSchema>>;
 }

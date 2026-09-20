@@ -9,12 +9,289 @@ datasource db {
   provider = "postgresql"
 }
 
+enum MembershipRole {
+  OWNER
+  ADMIN
+  MEMBER
+}
+
+enum ProjectVisibility {
+  PRIVATE
+  ORGANIZATION
+  PUBLIC_READONLY
+}
+
+enum NodeType {
+  FRONTEND
+  BACKEND
+  SERVICE
+  DATABASE
+  CACHE
+  QUEUE
+  INFRASTRUCTURE
+  EXTERNAL
+  GENERIC
+}
+
+enum EdgeType {
+  HTTP
+  REST
+  GRAPHQL
+  WEBSOCKET
+  GRPC
+  SQL
+  EVENT
+  QUEUE
+  PUBSUB
+  WEBHOOK
+  FILE
+  INTERNAL
+}
+
+enum RepositoryAnalysisStatus {
+  PENDING
+  COMPLETE
+  FAILED
+}
+
 model User {
-  id           String   @id @default(uuid()) @db.Uuid
-  email        String   @unique @db.VarChar(254)
-  passwordHash String   @map("password_hash") @db.VarChar(255)
-  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+  id           String       @id @default(uuid()) @db.Uuid
+  email        String       @unique @db.VarChar(254)
+  passwordHash String       @map("password_hash") @db.VarChar(255)
+  createdAt    DateTime     @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt    DateTime     @updatedAt @map("updated_at") @db.Timestamptz(3)
+  sessions     Session[]
+  memberships  Membership[]
+  comments     Comment[]
+  operations   CanvasOperation[]
+  activities   Activity[]
+  snapshots    CanvasSnapshot[] @relation("SnapshotCreator")
 
   @@map("users")
+}
+
+model Session {
+  id         String    @id @default(uuid()) @db.Uuid
+  userId     String    @map("user_id") @db.Uuid
+  tokenHash  String    @unique @map("token_hash") @db.Char(64)
+  expiresAt  DateTime  @map("expires_at") @db.Timestamptz(3)
+  lastSeenAt DateTime  @default(now()) @map("last_seen_at") @db.Timestamptz(3)
+  revokedAt  DateTime? @map("revoked_at") @db.Timestamptz(3)
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("sessions")
+}
+
+model Organization {
+  id          String       @id @default(uuid()) @db.Uuid
+  name        String       @db.VarChar(120)
+  slug        String       @unique @db.VarChar(140)
+  createdAt   DateTime     @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime     @updatedAt @map("updated_at") @db.Timestamptz(3)
+  memberships Membership[]
+  projects    Project[]
+
+  @@map("organizations")
+}
+
+model Membership {
+  id             String         @id @default(uuid()) @db.Uuid
+  organizationId String         @map("organization_id") @db.Uuid
+  userId         String         @map("user_id") @db.Uuid
+  role           MembershipRole @default(MEMBER)
+  createdAt      DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
+  organization   Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, userId])
+  @@index([userId])
+  @@map("memberships")
+}
+
+model Project {
+  id             String             @id @default(uuid()) @db.Uuid
+  organizationId String             @map("organization_id") @db.Uuid
+  name           String             @db.VarChar(120)
+  slug           String             @db.VarChar(140)
+  description    String?            @db.VarChar(600)
+  repositoryUrl  String?            @map("repository_url") @db.VarChar(500)
+  branch         String             @default("main") @db.VarChar(200)
+  visibility     ProjectVisibility  @default(PRIVATE)
+  archivedAt     DateTime?          @map("archived_at") @db.Timestamptz(3)
+  createdAt      DateTime           @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime           @updatedAt @map("updated_at") @db.Timestamptz(3)
+  organization   Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  canvases       Canvas[]
+  activities     Activity[]
+  analyses       RepositoryAnalysis[]
+
+  @@unique([organizationId, slug])
+  @@index([organizationId, updatedAt])
+  @@map("projects")
+}
+
+model Canvas {
+  id        String            @id @default(uuid()) @db.Uuid
+  projectId String            @map("project_id") @db.Uuid
+  name      String            @default("System Architecture") @db.VarChar(120)
+  version   Int               @default(0)
+  viewport  Json?
+  createdAt DateTime          @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime          @updatedAt @map("updated_at") @db.Timestamptz(3)
+  project   Project           @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  nodes     ArchitectureNode[]
+  edges     ArchitectureEdge[]
+  comments  Comment[]
+  snapshots CanvasSnapshot[]
+  operations CanvasOperation[]
+  activities Activity[]
+
+  @@index([projectId, updatedAt])
+  @@map("canvases")
+}
+
+model ArchitectureNode {
+  id          String   @id @db.VarChar(100)
+  canvasId    String   @map("canvas_id") @db.Uuid
+  type        NodeType
+  label       String   @db.VarChar(160)
+  description String?  @db.VarChar(800)
+  technology  String?  @db.VarChar(160)
+  x           Float
+  y           Float
+  width       Float?   @default(240)
+  height      Float?   @default(120)
+  metadata    Json?
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+  canvas      Canvas   @relation(fields: [canvasId], references: [id], onDelete: Cascade)
+  outgoing    ArchitectureEdge[] @relation("EdgeSource")
+  incoming    ArchitectureEdge[] @relation("EdgeTarget")
+  comments    Comment[]
+
+  @@index([canvasId])
+  @@index([canvasId, label])
+  @@map("architecture_nodes")
+}
+
+model ArchitectureEdge {
+  id           String   @id @db.VarChar(100)
+  canvasId     String   @map("canvas_id") @db.Uuid
+  sourceNodeId String   @map("source_node_id") @db.VarChar(100)
+  targetNodeId String   @map("target_node_id") @db.VarChar(100)
+  type         EdgeType @default(INTERNAL)
+  label        String?  @db.VarChar(120)
+  metadata     Json?
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+  canvas       Canvas   @relation(fields: [canvasId], references: [id], onDelete: Cascade)
+  source       ArchitectureNode @relation("EdgeSource", fields: [sourceNodeId], references: [id], onDelete: Cascade)
+  target       ArchitectureNode @relation("EdgeTarget", fields: [targetNodeId], references: [id], onDelete: Cascade)
+
+  @@index([canvasId])
+  @@index([sourceNodeId])
+  @@index([targetNodeId])
+  @@map("architecture_edges")
+}
+
+model CanvasOperation {
+  id        String   @id @default(uuid()) @db.Uuid
+  opId      String   @unique @map("op_id") @db.VarChar(100)
+  canvasId  String   @map("canvas_id") @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  clientId  String   @map("client_id") @db.VarChar(100)
+  version   Int
+  type      String   @db.VarChar(60)
+  payload   Json
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  canvas    Canvas   @relation(fields: [canvasId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([canvasId, version])
+  @@map("canvas_operations")
+}
+
+model Comment {
+  id         String    @id @default(uuid()) @db.Uuid
+  canvasId   String    @map("canvas_id") @db.Uuid
+  nodeId     String?   @map("node_id") @db.VarChar(100)
+  userId     String    @map("user_id") @db.Uuid
+  body       String    @db.VarChar(2000)
+  resolvedAt DateTime? @map("resolved_at") @db.Timestamptz(3)
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt  DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  canvas     Canvas    @relation(fields: [canvasId], references: [id], onDelete: Cascade)
+  node       ArchitectureNode? @relation(fields: [nodeId], references: [id], onDelete: Cascade)
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([canvasId, createdAt])
+  @@index([nodeId])
+  @@map("comments")
+}
+
+model CanvasSnapshot {
+  id          String   @id @default(uuid()) @db.Uuid
+  canvasId    String   @map("canvas_id") @db.Uuid
+  version     Int
+  label       String?  @db.VarChar(160)
+  state       Json
+  createdById String?  @map("created_by_id") @db.Uuid
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  canvas      Canvas   @relation(fields: [canvasId], references: [id], onDelete: Cascade)
+  createdBy   User?    @relation("SnapshotCreator", fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@index([canvasId, createdAt])
+  @@map("canvas_snapshots")
+}
+
+model Activity {
+  id        String   @id @default(uuid()) @db.Uuid
+  projectId String   @map("project_id") @db.Uuid
+  canvasId  String?  @map("canvas_id") @db.Uuid
+  actorId   String?  @map("actor_id") @db.Uuid
+  type      String   @db.VarChar(80)
+  payload   Json?
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  canvas    Canvas?  @relation(fields: [canvasId], references: [id], onDelete: Cascade)
+  actor     User?    @relation(fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([projectId, createdAt])
+  @@map("activities")
+}
+
+model RepositoryAnalysis {
+  id        String                   @id @default(uuid()) @db.Uuid
+  projectId String                   @map("project_id") @db.Uuid
+  provider  String                   @default("github") @db.VarChar(40)
+  owner     String                   @db.VarChar(160)
+  repository String                 @db.VarChar(160)
+  branch    String                   @db.VarChar(200)
+  status    RepositoryAnalysisStatus @default(PENDING)
+  summary   Json?
+  errorCode String?                  @map("error_code") @db.VarChar(80)
+  createdAt DateTime                 @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime                 @updatedAt @map("updated_at") @db.Timestamptz(3)
+  project   Project                  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  files     RepositoryFile[]
+
+  @@index([projectId, createdAt])
+  @@map("repository_analyses")
+}
+
+model RepositoryFile {
+  id         String   @id @default(uuid()) @db.Uuid
+  analysisId String   @map("analysis_id") @db.Uuid
+  path       String   @db.VarChar(1000)
+  language   String?  @db.VarChar(60)
+  size       Int
+  imports    Json?
+  analysis   RepositoryAnalysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
+
+  @@unique([analysisId, path])
+  @@index([analysisId])
+  @@map("repository_files")
 }

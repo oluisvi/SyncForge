@@ -1,101 +1,103 @@
 "use client";
-
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { ReactNode } from "react";
+import { useEffect, useState } from "react";
+import { useAuth } from "./auth-provider";
+import { ProjectsIcon, SettingsIcon, SunIcon } from "./icons";
 
-import { FolderIcon, SettingsIcon } from "./icons";
-
-type AppShellProps = Readonly<{
-  children: ReactNode;
-}>;
-
-type NavigationItem = Readonly<{
-  href: "/" | "/settings";
-  icon: typeof FolderIcon;
-  label: string;
-  matches: (pathname: string) => boolean;
-}>;
-
-const navigationItems: readonly NavigationItem[] = [
-  {
-    href: "/",
-    icon: FolderIcon,
-    label: "Projects",
-    matches: (pathname) => pathname === "/" || pathname.startsWith("/projects"),
-  },
-  {
-    href: "/settings",
-    icon: SettingsIcon,
-    label: "Settings",
-    matches: (pathname) => pathname.startsWith("/settings"),
-  },
-];
-
-function Navigation({
-  placement,
-}: Readonly<{ placement: "sidebar" | "bottom" }>) {
+export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-
-  return (
-    <nav
-      className={placement === "sidebar" ? "sidebar-nav" : "bottom-nav"}
-      aria-label={
-        placement === "sidebar" ? "Primary navigation" : "Mobile navigation"
-      }
-    >
-      {navigationItems.map((item) => {
-        const isActive = item.matches(pathname);
-        const Icon = item.icon;
-
-        return (
-          <Link
-            aria-current={
-              pathname === item.href
-                ? "page"
-                : isActive
-                  ? "location"
-                  : undefined
-            }
-            className="nav-link"
-            data-active={isActive ? "true" : "false"}
-            href={item.href}
-            key={item.href}
-          >
-            <Icon />
-            <span>{item.label}</span>
-          </Link>
-        );
-      })}
-    </nav>
-  );
-}
-
-export function AppShell({ children }: AppShellProps) {
+  const { user, logout } = useAuth();
+  const [theme, setTheme] = useState<"dark" | "light">("dark");
+  const canvasMode = pathname.includes("/canvas/");
+  useEffect(() => {
+    const stored = localStorage.getItem("syncforge-theme") as
+      "dark" | "light" | null;
+    const next =
+      stored ??
+      (matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+    setTheme(next);
+    document.documentElement.dataset.theme = next;
+  }, []);
+  function toggleTheme() {
+    const next = theme === "dark" ? "light" : "dark";
+    setTheme(next);
+    document.documentElement.dataset.theme = next;
+    localStorage.setItem("syncforge-theme", next);
+  }
+  if (canvasMode) return <>{children}</>;
   return (
     <div className="app-shell">
-      <header className="topbar">
-        <Link className="wordmark" href="/" aria-label="SyncForge home">
-          SyncForge
-        </Link>
-        <div className="workspace-context" aria-label="Current context">
-          <span>Workspace</span>
-        </div>
-        <span className="avatar" aria-hidden="true">
-          AK
-        </span>
-        <span className="visually-hidden">Signed in as AK</span>
-      </header>
-
       <aside className="sidebar">
-        <Navigation placement="sidebar" />
+        <Link className="sidebar-brand" href="/">
+          <span className="brand-glyph">
+            <i />
+            <i />
+            <i />
+          </span>
+          <span>SyncForge</span>
+        </Link>
+        <nav className="sidebar-nav" aria-label="Primary navigation">
+          <Link
+            className="nav-item"
+            data-active={
+              pathname === "/" || pathname.startsWith("/projects")
+                ? "true"
+                : "false"
+            }
+            href="/"
+          >
+            <ProjectsIcon />
+            <span>Projects</span>
+          </Link>
+          <Link
+            className="nav-item"
+            data-active={pathname.startsWith("/settings") ? "true" : "false"}
+            href="/settings"
+          >
+            <SettingsIcon />
+            <span>Settings</span>
+          </Link>
+        </nav>
+        <div className="sidebar-bottom">
+          <button className="nav-item" onClick={toggleTheme}>
+            <SunIcon />
+            <span>{theme === "dark" ? "Light mode" : "Dark mode"}</span>
+          </button>
+          <button
+            className="account-chip"
+            onClick={() => void logout()}
+            title="Sign out"
+          >
+            <span>{user?.email.slice(0, 2).toUpperCase()}</span>
+            <div>
+              <b>{user?.email.split("@")[0]}</b>
+              <small>Sign out</small>
+            </div>
+          </button>
+        </div>
       </aside>
-
-      <main className="main-surface" id="main-content">
-        {children}
-      </main>
-
-      <Navigation placement="bottom" />
+      <main className="main-surface">{children}</main>
+      <nav className="mobile-nav" aria-label="Mobile navigation">
+        <Link
+          data-active={
+            pathname === "/" || pathname.startsWith("/projects")
+              ? "true"
+              : "false"
+          }
+          href="/"
+        >
+          <ProjectsIcon />
+          <span>Projects</span>
+        </Link>
+        <Link
+          data-active={pathname.startsWith("/settings") ? "true" : "false"}
+          href="/settings"
+        >
+          <SettingsIcon />
+          <span>Settings</span>
+        </Link>
+      </nav>
     </div>
   );
 }
